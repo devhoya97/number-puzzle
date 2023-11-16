@@ -48,14 +48,20 @@ public class Puzzle {
         System.out.println(randomNumbers);
         try {
             List<Integer> changeTargets = getChangeTargets();
+            int firstTargetIndex = randomNumbers.indexOf(changeTargets.get(0));
+            int secondTargetIndex = randomNumbers.indexOf(changeTargets.get(1));
+            randomNumbers.set(firstTargetIndex, changeTargets.get(1));
+            randomNumbers.set(secondTargetIndex, changeTargets.get(0));
         } catch (IllegalArgumentException illegalArgumentException) {
             System.out.println(illegalArgumentException.getMessage());
         }
     }
 
     public static List<Integer> getChangeTargets() {
+        System.out.println();
         System.out.println("교환할 두 숫자를 입력>");
         Scanner scanner = new Scanner(System.in);
+        System.out.println();
         String input = scanner.nextLine();
         return parseInputToChangeTargets(input);
     }
