@@ -13,7 +13,6 @@ public class Puzzle {
     private static final String INPUT_ERROR = "잘못 입력하셨습니다. 다시 입력해 주세요.";
 
     public static void main(String[] args) {
-
     }
 
     public static void playTurns() {
@@ -53,7 +52,29 @@ public class Puzzle {
     }
 
     public static List<Integer> getChangeTargets() {
-        return null;
+        System.out.println("교환할 두 숫자를 입력>");
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        return parseInputToChangeTargets(input);
+    }
+
+    public static List<Integer> parseInputToChangeTargets(String input) {
+        String[] splitInput = input.split(DELIMITER);
+        if (splitInput.length != CHANGE_TARGETS_SIZE) {
+            throw new IllegalArgumentException(INPUT_ERROR);
+        }
+        int firstChangeTarget = parseSplitInputToInteger(splitInput[0]);
+        int secondChangeTarget = parseSplitInputToInteger(splitInput[1].trim());
+
+        return List.of(firstChangeTarget, secondChangeTarget);
+    }
+
+    public static int parseSplitInputToInteger(String splitInput) {
+        try {
+            return Integer.parseInt(splitInput);
+        } catch (NumberFormatException numberFormatException) {
+            throw new IllegalArgumentException(INPUT_ERROR);
+        }
     }
 }
 
