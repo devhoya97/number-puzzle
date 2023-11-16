@@ -15,6 +15,7 @@ public class Puzzle {
     private static final String INPUT_ERROR = "잘못 입력하셨습니다. 다시 입력해 주세요.";
 
     public static void main(String[] args) {
+        playTurns();
     }
 
     public static void playTurns() {
@@ -27,6 +28,9 @@ public class Puzzle {
             turn++;
             playTurn(randomNumbers, turn);
         }
+        System.out.println("Turn " + turn);
+        System.out.println(randomNumbers);
+        System.out.println();
         System.out.println("축하합니다! " + turn + "턴만에 퍼즐을 완성하셨습니다!");
     }
 
@@ -46,14 +50,17 @@ public class Puzzle {
     public static void playTurn(List<Integer> randomNumbers, int turn) {
         System.out.println("Trun " + turn);
         System.out.println(randomNumbers);
-        try {
-            List<Integer> changeTargets = getChangeTargets();
-            int firstTargetIndex = randomNumbers.indexOf(changeTargets.get(0));
-            int secondTargetIndex = randomNumbers.indexOf(changeTargets.get(1));
-            randomNumbers.set(firstTargetIndex, changeTargets.get(1));
-            randomNumbers.set(secondTargetIndex, changeTargets.get(0));
-        } catch (IllegalArgumentException illegalArgumentException) {
-            System.out.println(illegalArgumentException.getMessage());
+        while(true) {
+            try {
+                List<Integer> changeTargets = getChangeTargets();
+                int firstTargetIndex = randomNumbers.indexOf(changeTargets.get(0));
+                int secondTargetIndex = randomNumbers.indexOf(changeTargets.get(1));
+                randomNumbers.set(firstTargetIndex, changeTargets.get(1));
+                randomNumbers.set(secondTargetIndex, changeTargets.get(0));
+                return;
+            } catch (IllegalArgumentException illegalArgumentException) {
+                System.out.println(illegalArgumentException.getMessage());
+            }
         }
     }
 
@@ -61,8 +68,8 @@ public class Puzzle {
         System.out.println();
         System.out.println("교환할 두 숫자를 입력>");
         Scanner scanner = new Scanner(System.in);
-        System.out.println();
         String input = scanner.nextLine();
+        System.out.println();
         return parseInputToChangeTargets(input);
     }
 
