@@ -7,7 +7,9 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Puzzle {
-    private static final int PUZZLE_LENGTH = 8;
+    private static final int MIN_NUMBER = 1;
+    private static final int MAX_NUMBER = 8;
+    private static final int NUMBERS_LENGTH = MAX_NUMBER - MIN_NUMBER + 1;
     private static final int CHANGE_TARGETS_SIZE = 2;
     private static final String DELIMITER = ",";
     private static final String INPUT_ERROR = "잘못 입력하셨습니다. 다시 입력해 주세요.";
@@ -30,9 +32,9 @@ public class Puzzle {
 
     public static List<Integer> createRandomNumbers() {
         Random random = new Random();
-        List<Integer> randomNumbers = new ArrayList<>(PUZZLE_LENGTH);
-        while(randomNumbers.size() < PUZZLE_LENGTH) {
-            int randomNumber = random.nextInt(PUZZLE_LENGTH) + 1;
+        List<Integer> randomNumbers = new ArrayList<>(NUMBERS_LENGTH);
+        while(randomNumbers.size() < NUMBERS_LENGTH) {
+            int randomNumber = random.nextInt(NUMBERS_LENGTH) + MIN_NUMBER;
             if (randomNumbers.contains(randomNumber)) {
                 continue;
             }
@@ -65,6 +67,8 @@ public class Puzzle {
         }
         int firstChangeTarget = parseSplitInputToInteger(splitInput[0]);
         int secondChangeTarget = parseSplitInputToInteger(splitInput[1].trim());
+        validateTargetRange(firstChangeTarget);
+        validateTargetRange(secondChangeTarget);
 
         return List.of(firstChangeTarget, secondChangeTarget);
     }
@@ -73,6 +77,12 @@ public class Puzzle {
         try {
             return Integer.parseInt(splitInput);
         } catch (NumberFormatException numberFormatException) {
+            throw new IllegalArgumentException(INPUT_ERROR);
+        }
+    }
+
+    public static void validateTargetRange(int changeTarget) {
+        if (changeTarget < MIN_NUMBER || changeTarget > MAX_NUMBER) {
             throw new IllegalArgumentException(INPUT_ERROR);
         }
     }
