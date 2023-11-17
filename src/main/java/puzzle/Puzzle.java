@@ -10,20 +10,16 @@ public class Puzzle {
     private static int OVER_INDEX_DEFAULT = -1;
 
     public static void main(String[] args) {
-//        List<List<Integer>> gameBoard = createAnswer();
-//        int blankRow = getBlankRow(gameBoard);
-//        int blankColumn = getBlankColumn(gameBoard.get(blankRow));
-//        System.out.println(exchangeBlankUpDirection(gameBoard, blankRow, blankColumn, 12));
-//        blankRow = getBlankRow(gameBoard);
-//        blankColumn = getBlankColumn(gameBoard.get(blankRow));
-//        System.out.println(exchangeBlankUpDirection(gameBoard, blankRow, blankColumn, 8));
-//        blankRow = getBlankRow(gameBoard);
-//        blankColumn = getBlankColumn(gameBoard.get(blankRow));
-//        System.out.println(exchangeBlankUpDirection(gameBoard, blankRow, blankColumn, 4));
-//        blankRow = getBlankRow(gameBoard);
-//        blankColumn = getBlankColumn(gameBoard.get(blankRow));
-//        System.out.println(exchangeBlankUpDirection(gameBoard, blankRow, blankColumn, 4));
-//        System.out.println(gameBoard);
+        List<List<Integer>> gameBoard = createAnswer();
+        int blankRow = getBlankRow(gameBoard);
+        int blankColumn = getBlankColumn(gameBoard.get(blankRow));
+        System.out.println(exchangeBlankUpDirection(gameBoard, blankRow, blankColumn, 12));
+        System.out.println(gameBoard);
+        blankRow = getBlankRow(gameBoard);
+        blankColumn = getBlankColumn(gameBoard.get(blankRow));
+        System.out.println(exchangeBlankDownDirection(gameBoard, blankRow, blankColumn, 12));
+        System.out.println(gameBoard);
+
     }
 
     private static List<List<Integer>> createAnswer() {
@@ -73,6 +69,19 @@ public class Puzzle {
             return false;
         }
         upperRow.set(blankColumnIndex, BLANK_EXPRESSION);
+        List<Integer> blankRow = gameBoard.get(blankRowIndex);
+        blankRow.set(blankColumnIndex, target);
+        return true;
+    }
+
+    private static boolean exchangeBlankDownDirection(List<List<Integer>> gameBoard, int blankRowIndex,
+                                                    int blankColumnIndex, int target) {
+        List<Integer> lowerRow = getListOrDefault(gameBoard, blankRowIndex + 1);
+        Integer targetCandidate = lowerRow.get(blankColumnIndex);
+        if (targetCandidate != target) {
+            return false;
+        }
+        lowerRow.set(blankColumnIndex, BLANK_EXPRESSION);
         List<Integer> blankRow = gameBoard.get(blankRowIndex);
         blankRow.set(blankColumnIndex, target);
         return true;
