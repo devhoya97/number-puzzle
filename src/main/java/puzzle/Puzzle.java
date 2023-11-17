@@ -15,9 +15,14 @@ public class Puzzle {
     private static final String INPUT_ERROR = "잘못 입력하셨습니다. 다시 입력해 주세요.";
 
     public static void main(String[] args) {
+        List<List<Integer>> answer = createAnswer();
         List<List<Integer>> gameBoard = createAnswer();
         shuffleGameBoard(gameBoard);
-        printGameBoard(gameBoard);
+        int turn = 1;
+        printGameBoard(gameBoard, turn);
+        while (!isAnswer(gameBoard, answer)) {
+
+        }
     }
 
     private static List<List<Integer>> createAnswer() {
@@ -156,7 +161,8 @@ public class Puzzle {
         }
     }
 
-    private static void printGameBoard(List<List<Integer>> gameBoard) {
+    private static void printGameBoard(List<List<Integer>> gameBoard, int turn) {
+        System.out.println("Turn " + turn);
         for (List<Integer> row : gameBoard) {
             for (Integer number : row) {
                 if (number == 16) {
@@ -167,6 +173,17 @@ public class Puzzle {
             }
             System.out.println();
         }
+    }
+
+    private static boolean isAnswer(List<List<Integer>> gameBoard, List<List<Integer>> answer) {
+        for (int rowIndex = 0; rowIndex < ROW_LENGTH; rowIndex++) {
+            List<Integer> gameBoardRow = gameBoard.get(rowIndex);
+            List<Integer> answerRow = answer.get(rowIndex);
+            if (!gameBoardRow.equals(answerRow)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
