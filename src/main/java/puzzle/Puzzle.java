@@ -12,16 +12,30 @@ public class Puzzle {
     private static final int BLANK_EXPRESSION = 16;
     private static final int OVER_INDEX_DEFAULT = -1;
     private static final int SHUFFLE_COUNT = 1000;
-    private static final String INPUT_ERROR = "잘못 입력하셨습니다. 다시 입력해 주세요.";
+    private static final String INPUT_ERROR = "\n잘못 입력하셨습니다. 다시 입력해 주세요.\n";
 
     public static void main(String[] args) {
         List<List<Integer>> answer = createAnswer();
         List<List<Integer>> gameBoard = createAnswer();
         shuffleGameBoard(gameBoard);
         int turn = 1;
-        printGameBoard(gameBoard, turn);
         while (!isAnswer(gameBoard, answer)) {
+            printGameBoard(gameBoard, turn);
+            tryUntilValidInput(gameBoard);
+            turn++;
+        }
+        printAnswerMessage(gameBoard, turn);
+    }
 
+    private static void tryUntilValidInput(List<List<Integer>> gameBoard) {
+        while (true) {
+            try {
+                int userNumber = getUserNumber();
+                exchangeBlankAndTarget(gameBoard, userNumber);
+                return;
+            } catch (IllegalArgumentException illegalArgumentException) {
+                System.out.println(illegalArgumentException.getMessage());
+            }
         }
     }
 
@@ -150,18 +164,26 @@ public class Puzzle {
     }
 
     private static int getUserNumber() {
-        System.out.print("숫자 입력> ");
         Scanner console = new Scanner(System.in);
         while (true) {
             try {
+                System.out.print("숫자 입력> ");
                 return console.nextInt();
             } catch (InputMismatchException inputMismatchException) {
                 System.out.println(INPUT_ERROR);
+                console.nextLine();
             }
         }
     }
 
+    private static void printAnswerMessage(List<List<Integer>> gameBoard, int turn) {
+        printGameBoard(gameBoard, turn);
+        System.out.println();
+        System.out.printf("축하합니다! %d턴만에 퍼즐을 완성했습니다!", turn);
+    }
+
     private static void printGameBoard(List<List<Integer>> gameBoard, int turn) {
+        System.out.println();
         System.out.println("Turn " + turn);
         for (List<Integer> row : gameBoard) {
             for (Integer number : row) {
