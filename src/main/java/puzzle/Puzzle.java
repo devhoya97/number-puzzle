@@ -11,7 +11,7 @@ public class Puzzle {
     private static int COLUMN_LENGTH = 4;
 
     public static void main(String[] args) {
-        
+
     }
 
     private static List<List<Integer>> createAnswer() {
@@ -24,6 +24,19 @@ public class Puzzle {
             answer.add(row);
         }
         return answer;
+    }
+
+    private static void printGameBoard(List<List<Integer>> gameBoard) {
+        for (List<Integer> row : gameBoard) {
+            for (Integer number : row) {
+                if (number == 16) {
+                    System.out.print("[  ]");
+                    continue;
+                }
+                System.out.printf("[%2d]", number);
+            }
+            System.out.println();
+        }
     }
 }
 
