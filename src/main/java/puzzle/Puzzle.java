@@ -14,7 +14,11 @@ public class Puzzle {
         int blankRowIndex = getBlankRow(gameBoard);
         int blankColumnIndex = getBlankColumn(gameBoard.get(blankRowIndex));
         System.out.println(exchangeBlankLeftDirection(gameBoard, blankRowIndex, blankColumnIndex, 15));
-        System.out.println(gameBoard);
+        printGameBoard(gameBoard);
+        blankRowIndex = getBlankRow(gameBoard);
+        blankColumnIndex = getBlankColumn(gameBoard.get(blankRowIndex));
+        System.out.println(exchangeBlankRightDirection(gameBoard, blankRowIndex, blankColumnIndex, 15));
+        printGameBoard(gameBoard);
     }
 
     private static List<List<Integer>> createAnswer() {
@@ -90,6 +94,18 @@ public class Puzzle {
             return false;
         }
         blankRow.set(blankColumnIndex - 1, BLANK_EXPRESSION);
+        blankRow.set(blankColumnIndex, target);
+        return true;
+    }
+
+    private static boolean exchangeBlankRightDirection(List<List<Integer>> gameBoard, int blankRowIndex,
+                                                      int blankColumnIndex, int target) {
+        List<Integer> blankRow = gameBoard.get(blankRowIndex);
+        Integer targetCandidate = getValueOrDefault(blankRow, blankColumnIndex + 1);
+        if (targetCandidate != target) {
+            return false;
+        }
+        blankRow.set(blankColumnIndex + 1, BLANK_EXPRESSION);
         blankRow.set(blankColumnIndex, target);
         return true;
     }
