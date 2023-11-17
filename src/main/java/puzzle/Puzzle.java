@@ -11,15 +11,10 @@ public class Puzzle {
 
     public static void main(String[] args) {
         List<List<Integer>> gameBoard = createAnswer();
-        int blankRow = getBlankRow(gameBoard);
-        int blankColumn = getBlankColumn(gameBoard.get(blankRow));
-        System.out.println(exchangeBlankUpDirection(gameBoard, blankRow, blankColumn, 12));
+        int blankRowIndex = getBlankRow(gameBoard);
+        int blankColumnIndex = getBlankColumn(gameBoard.get(blankRowIndex));
+        System.out.println(exchangeBlankLeftDirection(gameBoard, blankRowIndex, blankColumnIndex, 15));
         System.out.println(gameBoard);
-        blankRow = getBlankRow(gameBoard);
-        blankColumn = getBlankColumn(gameBoard.get(blankRow));
-        System.out.println(exchangeBlankDownDirection(gameBoard, blankRow, blankColumn, 12));
-        System.out.println(gameBoard);
-
     }
 
     private static List<List<Integer>> createAnswer() {
@@ -83,6 +78,18 @@ public class Puzzle {
         }
         lowerRow.set(blankColumnIndex, BLANK_EXPRESSION);
         List<Integer> blankRow = gameBoard.get(blankRowIndex);
+        blankRow.set(blankColumnIndex, target);
+        return true;
+    }
+
+    private static boolean exchangeBlankLeftDirection(List<List<Integer>> gameBoard, int blankRowIndex,
+                                                      int blankColumnIndex, int target) {
+        List<Integer> blankRow = gameBoard.get(blankRowIndex);
+        Integer targetCandidate = getValueOrDefault(blankRow, blankColumnIndex - 1);
+        if (targetCandidate != target) {
+            return false;
+        }
+        blankRow.set(blankColumnIndex - 1, BLANK_EXPRESSION);
         blankRow.set(blankColumnIndex, target);
         return true;
     }
