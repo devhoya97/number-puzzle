@@ -2,26 +2,19 @@ package puzzle;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Puzzle {
     private static final int ROW_LENGTH = 4;
     private static final int COLUMN_LENGTH = 4;
     private static final int BLANK_EXPRESSION = 16;
     private static final int OVER_INDEX_DEFAULT = -1;
+    private static final int SHUFFLE_COUNT = 1000;
     private static final String INPUT_ERROR = "잘못 입력하셨습니다. 다시 입력해 주세요.";
 
     public static void main(String[] args) {
         List<List<Integer>> gameBoard = createAnswer();
-        exchangeBlankAndTarget(gameBoard, 12);
-        printGameBoard(gameBoard);
-        System.out.println();
-        exchangeBlankAndTarget(gameBoard, 11);
-        printGameBoard(gameBoard);
-        System.out.println();
-        exchangeBlankAndTarget(gameBoard, 10);
-        printGameBoard(gameBoard);
-        System.out.println();
-        exchangeBlankAndTarget(gameBoard, 14);
+        shuffleGameBoard(gameBoard);
         printGameBoard(gameBoard);
     }
 
@@ -38,7 +31,15 @@ public class Puzzle {
     }
 
     private static void shuffleGameBoard(List<List<Integer>> gameBoard) {
-
+        Random random = new Random();
+        for (int count = 0; count < SHUFFLE_COUNT; count++) {
+            int randomNumber = random.nextInt(15) + 1;
+            try {
+                exchangeBlankAndTarget(gameBoard, randomNumber);
+            } catch (IllegalArgumentException illegalArgumentException) {
+                // randomNumber가 공백과 인접한 숫자를 뽑지 못한 경우, 교환 없이 count만 증가시킨다.
+            }
+        }
     }
 
     private static void exchangeBlankAndTarget(List<List<Integer>> gameBoard, int target) {
@@ -123,18 +124,22 @@ public class Puzzle {
         return true;
     }
 
+    private static List<Integer> getListOrDefault(List<List<Integer>> gameBoard, int rowIndex) {
+        if ((rowIndex < 0) || (gameBoard.size() <= rowIndex)) {
+            List<Integer> defaults = new ArrayList<>(COLUMN_LENGTH);
+            for (int count = 0; count < COLUMN_LENGTH; count++) {
+                defaults.add(OVER_INDEX_DEFAULT);
+            }
+            return defaults;
+        }
+        return gameBoard.get(rowIndex);
+    }
+
     private static Integer getValueOrDefault(List<Integer> row, int columnIndex) {
         if ((columnIndex < 0) || (row.size() <= columnIndex)) {
             return OVER_INDEX_DEFAULT;
         }
         return row.get(columnIndex);
-    }
-
-    private static List<Integer> getListOrDefault(List<List<Integer>> gameBoard, int rowIndex) {
-        if ((rowIndex < 0) || (gameBoard.size() <= rowIndex)) {
-            return List.of(OVER_INDEX_DEFAULT, OVER_INDEX_DEFAULT, OVER_INDEX_DEFAULT, OVER_INDEX_DEFAULT);
-        }
-        return gameBoard.get(rowIndex);
     }
 
     private static void printGameBoard(List<List<Integer>> gameBoard) {
