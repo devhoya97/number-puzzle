@@ -31,7 +31,7 @@ public class Puzzle {
         while (true) {
             try {
                 int userNumber = getUserNumber();
-                exchangeBlankAndTarget(gameBoard, userNumber);
+                exchangeBlankAndTargetCandidate(gameBoard, userNumber);
                 return;
             } catch (IllegalArgumentException illegalArgumentException) {
                 System.out.println(illegalArgumentException.getMessage());
@@ -54,34 +54,34 @@ public class Puzzle {
     private static void shuffleGameBoard(List<List<Integer>> gameBoard) {
         Random random = new Random();
         for (int count = 0; count < SHUFFLE_COUNT; count++) {
-            int randomNumber = random.nextInt(15) + 1;
+            int randomNumber = random.nextInt(BLANK_EXPRESSION - 1) + 1;
             try {
-                exchangeBlankAndTarget(gameBoard, randomNumber);
+                exchangeBlankAndTargetCandidate(gameBoard, randomNumber);
             } catch (IllegalArgumentException illegalArgumentException) {
                 // randomNumber가 공백과 인접한 숫자를 뽑지 못한 경우, 교환 없이 count만 증가시킨다.
             }
         }
     }
 
-    private static void exchangeBlankAndTarget(List<List<Integer>> gameBoard, int target) {
-        int blankRowIndex= getBlankRow(gameBoard);
-        int blankColumnIndex = getBlankColumn(gameBoard.get(blankRowIndex));
-        if(exchangeBlankUpDirection(gameBoard, blankRowIndex, blankColumnIndex, target)) {
+    private static void exchangeBlankAndTargetCandidate(List<List<Integer>> gameBoard, int targetCandidate) {
+        int blankRowIndex= getBlankRowIndex(gameBoard);
+        int blankColumnIndex = getBlankColumnIndex(gameBoard.get(blankRowIndex));
+        if(exchangeBlankUpDirection(gameBoard, blankRowIndex, blankColumnIndex, targetCandidate)) {
             return;
         }
-        if (exchangeBlankDownDirection(gameBoard, blankRowIndex, blankColumnIndex, target)) {
+        if (exchangeBlankDownDirection(gameBoard, blankRowIndex, blankColumnIndex, targetCandidate)) {
             return;
         }
-        if (exchangeBlankLeftDirection(gameBoard, blankRowIndex, blankColumnIndex, target)) {
+        if (exchangeBlankLeftDirection(gameBoard, blankRowIndex, blankColumnIndex, targetCandidate)) {
             return;
         }
-        if (exchangeBlankRightDirection(gameBoard, blankRowIndex, blankColumnIndex, target)) {
+        if (exchangeBlankRightDirection(gameBoard, blankRowIndex, blankColumnIndex, targetCandidate)) {
             return;
         }
         throw new IllegalArgumentException(INPUT_ERROR);
     }
 
-    private static Integer getBlankRow(List<List<Integer>> gameBoard) {
+    private static Integer getBlankRowIndex(List<List<Integer>> gameBoard) {
         for (int rowCount = 0; rowCount < ROW_LENGTH; rowCount++) {
             List<Integer> row = gameBoard.get(rowCount);
             if (row.contains(BLANK_EXPRESSION)) {
@@ -91,61 +91,61 @@ public class Puzzle {
         throw new IllegalStateException("게임보드에서 공백을 찾을 수 없습니다.");
     }
 
-    private static Integer getBlankColumn(List<Integer> row) {
+    private static Integer getBlankColumnIndex(List<Integer> row) {
         return row.indexOf(BLANK_EXPRESSION);
     }
 
     private static boolean exchangeBlankUpDirection(List<List<Integer>> gameBoard, int blankRowIndex,
-                                                    int blankColumnIndex, int target) {
-        List<Integer> upperRow = getListOrDefault(gameBoard, blankRowIndex - 1);
-        Integer targetCandidate = upperRow.get(blankColumnIndex);
-        if (targetCandidate != target) {
+                                                    int blankColumnIndex, int targetCandidate) {
+        List<Integer> upperRow = getRowOrDefault(gameBoard, blankRowIndex - 1);
+        Integer target = upperRow.get(blankColumnIndex);
+        if (target != targetCandidate) {
             return false;
         }
         upperRow.set(blankColumnIndex, BLANK_EXPRESSION);
         List<Integer> blankRow = gameBoard.get(blankRowIndex);
-        blankRow.set(blankColumnIndex, target);
+        blankRow.set(blankColumnIndex, targetCandidate);
         return true;
     }
 
     private static boolean exchangeBlankDownDirection(List<List<Integer>> gameBoard, int blankRowIndex,
-                                                    int blankColumnIndex, int target) {
-        List<Integer> lowerRow = getListOrDefault(gameBoard, blankRowIndex + 1);
-        Integer targetCandidate = lowerRow.get(blankColumnIndex);
-        if (targetCandidate != target) {
+                                                    int blankColumnIndex, int targetCandidate) {
+        List<Integer> lowerRow = getRowOrDefault(gameBoard, blankRowIndex + 1);
+        Integer target = lowerRow.get(blankColumnIndex);
+        if (target != targetCandidate) {
             return false;
         }
         lowerRow.set(blankColumnIndex, BLANK_EXPRESSION);
         List<Integer> blankRow = gameBoard.get(blankRowIndex);
-        blankRow.set(blankColumnIndex, target);
+        blankRow.set(blankColumnIndex, targetCandidate);
         return true;
     }
 
     private static boolean exchangeBlankLeftDirection(List<List<Integer>> gameBoard, int blankRowIndex,
-                                                      int blankColumnIndex, int target) {
+                                                      int blankColumnIndex, int targetCandidate) {
         List<Integer> blankRow = gameBoard.get(blankRowIndex);
-        Integer targetCandidate = getValueOrDefault(blankRow, blankColumnIndex - 1);
-        if (targetCandidate != target) {
+        Integer target = getValueOrDefault(blankRow, blankColumnIndex - 1);
+        if (target != targetCandidate) {
             return false;
         }
         blankRow.set(blankColumnIndex - 1, BLANK_EXPRESSION);
-        blankRow.set(blankColumnIndex, target);
+        blankRow.set(blankColumnIndex, targetCandidate);
         return true;
     }
 
     private static boolean exchangeBlankRightDirection(List<List<Integer>> gameBoard, int blankRowIndex,
-                                                      int blankColumnIndex, int target) {
+                                                      int blankColumnIndex, int targetCandidate) {
         List<Integer> blankRow = gameBoard.get(blankRowIndex);
-        Integer targetCandidate = getValueOrDefault(blankRow, blankColumnIndex + 1);
-        if (targetCandidate != target) {
+        Integer target = getValueOrDefault(blankRow, blankColumnIndex + 1);
+        if (target != targetCandidate) {
             return false;
         }
         blankRow.set(blankColumnIndex + 1, BLANK_EXPRESSION);
-        blankRow.set(blankColumnIndex, target);
+        blankRow.set(blankColumnIndex, targetCandidate);
         return true;
     }
 
-    private static List<Integer> getListOrDefault(List<List<Integer>> gameBoard, int rowIndex) {
+    private static List<Integer> getRowOrDefault(List<List<Integer>> gameBoard, int rowIndex) {
         if ((rowIndex < 0) || (gameBoard.size() <= rowIndex)) {
             List<Integer> defaults = new ArrayList<>(COLUMN_LENGTH);
             for (int count = 0; count < COLUMN_LENGTH; count++) {
@@ -187,7 +187,7 @@ public class Puzzle {
         System.out.println("Turn " + turn);
         for (List<Integer> row : gameBoard) {
             for (Integer number : row) {
-                if (number == 16) {
+                if (number == BLANK_EXPRESSION) {
                     System.out.print("[  ]");
                     continue;
                 }
