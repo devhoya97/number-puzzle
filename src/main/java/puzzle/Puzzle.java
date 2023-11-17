@@ -4,20 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Puzzle {
-    private static int ROW_LENGTH = 4;
-    private static int COLUMN_LENGTH = 4;
-    private static int BLANK_EXPRESSION = 16;
-    private static int OVER_INDEX_DEFAULT = -1;
+    private static final int ROW_LENGTH = 4;
+    private static final int COLUMN_LENGTH = 4;
+    private static final int BLANK_EXPRESSION = 16;
+    private static final int OVER_INDEX_DEFAULT = -1;
+    private static final String INPUT_ERROR = "잘못 입력하셨습니다. 다시 입력해 주세요.";
 
     public static void main(String[] args) {
         List<List<Integer>> gameBoard = createAnswer();
-        int blankRowIndex = getBlankRow(gameBoard);
-        int blankColumnIndex = getBlankColumn(gameBoard.get(blankRowIndex));
-        System.out.println(exchangeBlankLeftDirection(gameBoard, blankRowIndex, blankColumnIndex, 15));
+        exchangeBlankAndTarget(gameBoard, 12);
         printGameBoard(gameBoard);
-        blankRowIndex = getBlankRow(gameBoard);
-        blankColumnIndex = getBlankColumn(gameBoard.get(blankRowIndex));
-        System.out.println(exchangeBlankRightDirection(gameBoard, blankRowIndex, blankColumnIndex, 15));
+        System.out.println();
+        exchangeBlankAndTarget(gameBoard, 11);
+        printGameBoard(gameBoard);
+        System.out.println();
+        exchangeBlankAndTarget(gameBoard, 10);
+        printGameBoard(gameBoard);
+        System.out.println();
+        exchangeBlankAndTarget(gameBoard, 14);
         printGameBoard(gameBoard);
     }
 
@@ -38,12 +42,21 @@ public class Puzzle {
     }
 
     private static void exchangeBlankAndTarget(List<List<Integer>> gameBoard, int target) {
-        int blankRow = getBlankRow(gameBoard);
-        int blankColumn = getBlankColumn(gameBoard.get(blankRow));
-        List<Integer> row = getListOrDefault(gameBoard, blankRow - 1);
-        int upNumber = getValueOrDefault(row, blankColumn);
-        if (upNumber == target) {
+        int blankRowIndex= getBlankRow(gameBoard);
+        int blankColumnIndex = getBlankColumn(gameBoard.get(blankRowIndex));
+        if(exchangeBlankUpDirection(gameBoard, blankRowIndex, blankColumnIndex, target)) {
+            return;
         }
+        if (exchangeBlankDownDirection(gameBoard, blankRowIndex, blankColumnIndex, target)) {
+            return;
+        }
+        if (exchangeBlankLeftDirection(gameBoard, blankRowIndex, blankColumnIndex, target)) {
+            return;
+        }
+        if (exchangeBlankRightDirection(gameBoard, blankRowIndex, blankColumnIndex, target)) {
+            return;
+        }
+        throw new IllegalArgumentException(INPUT_ERROR);
     }
 
     private static Integer getBlankRow(List<List<Integer>> gameBoard) {
