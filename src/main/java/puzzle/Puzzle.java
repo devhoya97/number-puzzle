@@ -1,8 +1,10 @@
 package puzzle;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Random;
+import java.util.Scanner;
 
 public class Puzzle {
     private static final int ROW_LENGTH = 4;
@@ -140,6 +142,18 @@ public class Puzzle {
             return OVER_INDEX_DEFAULT;
         }
         return row.get(columnIndex);
+    }
+
+    private static int getUserNumber() {
+        System.out.print("숫자 입력> ");
+        Scanner console = new Scanner(System.in);
+        while (true) {
+            try {
+                return console.nextInt();
+            } catch (InputMismatchException inputMismatchException) {
+                System.out.println(INPUT_ERROR);
+            }
+        }
     }
 
     private static void printGameBoard(List<List<Integer>> gameBoard) {
