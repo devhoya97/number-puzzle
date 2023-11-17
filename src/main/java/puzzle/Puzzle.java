@@ -1,19 +1,29 @@
 package puzzle;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-import java.util.Scanner;
 
 public class Puzzle {
     private static int ROW_LENGTH = 4;
     private static int COLUMN_LENGTH = 4;
-    private static int EMPTY_EXPRESSION = 16;
-    private static int ERROR_RETURN = -1;
+    private static int BLANK_EXPRESSION = 16;
+    private static int OVER_INDEX_DEFAULT = -1;
 
     public static void main(String[] args) {
-
+//        List<List<Integer>> gameBoard = createAnswer();
+//        int blankRow = getBlankRow(gameBoard);
+//        int blankColumn = getBlankColumn(gameBoard.get(blankRow));
+//        System.out.println(exchangeBlankUpDirection(gameBoard, blankRow, blankColumn, 12));
+//        blankRow = getBlankRow(gameBoard);
+//        blankColumn = getBlankColumn(gameBoard.get(blankRow));
+//        System.out.println(exchangeBlankUpDirection(gameBoard, blankRow, blankColumn, 8));
+//        blankRow = getBlankRow(gameBoard);
+//        blankColumn = getBlankColumn(gameBoard.get(blankRow));
+//        System.out.println(exchangeBlankUpDirection(gameBoard, blankRow, blankColumn, 4));
+//        blankRow = getBlankRow(gameBoard);
+//        blankColumn = getBlankColumn(gameBoard.get(blankRow));
+//        System.out.println(exchangeBlankUpDirection(gameBoard, blankRow, blankColumn, 4));
+//        System.out.println(gameBoard);
     }
 
     private static List<List<Integer>> createAnswer() {
@@ -32,10 +42,19 @@ public class Puzzle {
 
     }
 
+    private static void exchangeBlankAndTarget(List<List<Integer>> gameBoard, int target) {
+        int blankRow = getBlankRow(gameBoard);
+        int blankColumn = getBlankColumn(gameBoard.get(blankRow));
+        List<Integer> row = getListOrDefault(gameBoard, blankRow - 1);
+        int upNumber = getValueOrDefault(row, blankColumn);
+        if (upNumber == target) {
+        }
+    }
+
     private static Integer getBlankRow(List<List<Integer>> gameBoard) {
         for (int rowCount = 0; rowCount < ROW_LENGTH; rowCount++) {
             List<Integer> row = gameBoard.get(rowCount);
-            if (row.contains(EMPTY_EXPRESSION)) {
+            if (row.contains(BLANK_EXPRESSION)) {
                 return rowCount;
             }
         }
@@ -43,7 +62,34 @@ public class Puzzle {
     }
 
     private static Integer getBlankColumn(List<Integer> row) {
-        return row.indexOf(EMPTY_EXPRESSION);
+        return row.indexOf(BLANK_EXPRESSION);
+    }
+
+    private static boolean exchangeBlankUpDirection(List<List<Integer>> gameBoard, int blankRowIndex,
+                                                    int blankColumnIndex, int target) {
+        List<Integer> upperRow = getListOrDefault(gameBoard, blankRowIndex - 1);
+        Integer targetCandidate = upperRow.get(blankColumnIndex);
+        if (targetCandidate != target) {
+            return false;
+        }
+        upperRow.set(blankColumnIndex, BLANK_EXPRESSION);
+        List<Integer> blankRow = gameBoard.get(blankRowIndex);
+        blankRow.set(blankColumnIndex, target);
+        return true;
+    }
+
+    private static Integer getValueOrDefault(List<Integer> row, int columnIndex) {
+        if ((columnIndex < 0) || (row.size() <= columnIndex)) {
+            return OVER_INDEX_DEFAULT;
+        }
+        return row.get(columnIndex);
+    }
+
+    private static List<Integer> getListOrDefault(List<List<Integer>> gameBoard, int rowIndex) {
+        if ((rowIndex < 0) || (gameBoard.size() <= rowIndex)) {
+            return List.of(OVER_INDEX_DEFAULT, OVER_INDEX_DEFAULT, OVER_INDEX_DEFAULT, OVER_INDEX_DEFAULT);
+        }
+        return gameBoard.get(rowIndex);
     }
 
     private static void printGameBoard(List<List<Integer>> gameBoard) {
